@@ -32,7 +32,6 @@ A full-stack Flask-based application to manage and schedule events with recurrin
 
 ### 1. Clone the repository
 
-```bash
 git clone https://github.com/neha-bankar-18/event-schedular.git
 cd event-scheduler
 
@@ -42,9 +41,17 @@ Make sure Python 3.8+ is installed.
 
 ### 1. Start the Flask Server
 
-```bash
 python app.py
 
 🚀 Event Scheduler App Running...
  * Running on http://127.0.0.1:5000 (Press CTRL+C to quit)
+
+## 🧪 Running Unit Tests (with Pytest)
+
+This app includes unit tests using [Pytest](https://docs.pytest.org/) to validate all critical endpoints.
+
+### 1. Install Pytest (if not already)
+
+pip install pytest
+pytest test_app.py
 
