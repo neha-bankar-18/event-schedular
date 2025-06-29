@@ -1,0 +1,74 @@
+[
+    {
+        "id": 1,
+        "title": "Updated Title",
+        "description": "Monthly strategy review",
+        "start_time": "2025-07-01 14:40",
+        "end_time": "2025-07-01 23:40",
+        "recurrence": "monthly",
+        "email_notify": true
+    },
+    {
+        "id": 2,
+        "title": "Team Meeting",
+        "description": "Update the Progress",
+        "start_time": "2025-07-07 12:40",
+        "end_time": "2025-07-07 13:40",
+        "recurrence": "weekly",
+        "email_notify": true
+    },
+    {
+        "id": 3,
+        "title": "Monthly Report Submission",
+        "description": "Submit department report to HR",
+        "start_time": "2025-06-29 11:00",
+        "end_time": "2025-06-29 00:00",
+        "recurrence": "monthly",
+        "email_notify": true
+    },
+    {
+        "id": 4,
+        "title": "Weekly Report Submission",
+        "description": "Submit department report to Team Lead",
+        "start_time": "2025-06-29 00:00",
+        "end_time": "2025-06-29 00:30",
+        "recurrence": "weekly",
+        "email_notify": true
+    },
+    {
+        "id": 5,
+        "title": "Test Reminder",
+        "description": "Should trigger within an hour",
+        "start_time": "2025-06-28 19:15",
+        "end_time": "2025-06-28 20:00",
+        "recurrence": "none",
+        "email_notify": true
+    },
+    {
+        "id": 6,
+        "title": "Daily Check-in",
+        "description": "Recurring test",
+        "start_time": "2025-06-29 12:55",
+        "end_time": "2025-06-29 13:30",
+        "recurrence": "daily",
+        "email_notify": true
+    },
+    {
+        "id": 7,
+        "title": "Test Event",
+        "description": "Unit Test Desc",
+        "start_time": "2025-12-31 10:00",
+        "end_time": "2025-12-31 11:00",
+        "recurrence": "none",
+        "email_notify": false
+    },
+    {
+        "id": 8,
+        "title": "Meeting Alpha",
+        "description": "Project A",
+        "start_time": "2025-12-30 09:00",
+        "end_time": "2025-12-30 10:00",
+        "recurrence": "none",
+        "email_notify": false
+    }
+]

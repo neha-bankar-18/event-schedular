@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Event Scheduler</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .sidebar {
+      min-height: 100vh;
+      background-color: #f8f9fa;
+      border-right: 1px solid #dee2e6;
+      padding-top: 1.5rem;
+    }
+    .sidebar .btn {
+      margin-bottom: 0.75rem;
+    }
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+      .sidebar.show {
+        display: block;
+        position: absolute;
+        z-index: 1000;
+        width: 200px;
+        background: #fff;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+      }
+    }
+  </style>
+</head>
+<body class="bg-light">
+
+<!-- Mobile Menu Toggle -->
+<nav class="navbar navbar-light bg-white border-bottom d-md-none">
+  <div class="container-fluid">
+    <button class="btn btn-outline-primary btn-sm" onclick="toggleSidebar()">☰ Menu</button>
+    <span class="navbar-brand mx-auto">📅 Event Scheduler</span>
+  </div>
+</nav>
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-2 sidebar" id="sidebar">
+      <div class="text-center d-none d-md-block"><h5>🧭 Menu</h5></div>
+      <div class="d-grid px-3">
+        <a href="/create" class="btn btn-primary btn-sm">➕ Create</a>
+        <a href="/list" class="btn btn-success btn-sm">📋 List</a>
+        <a href="/update" class="btn btn-warning btn-sm">✏️ Update</a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-10 p-4">
+      <h3 class="mb-4 text-center">📅 Event Scheduler Dashboard</h3>
+
+      <!-- Search -->
+      <h5>🔍 Search Events</h5>
+      <div class="input-group input-group-sm mb-3" style="max-width: 500px;">
+        <input type="text" id="searchBox" class="form-control form-control-sm" placeholder="Search title or description">
+        <button class="btn btn-outline-secondary btn-sm" onclick="searchEvents()">Search</button>
+      </div>
+      <ul id="searchResults" class="list-group mb-4" style="max-width: 500px;"></ul>
+
+      <!-- Stats -->
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h6 class="card-title">Total Events</h6>
+              <h4 id="totalEvents">Loading...</h4>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h6 class="card-title">Upcoming Today</h6>
+              <h4 id="todayEvents">Loading...</h4>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h6 class="card-title">Next Hour</h6>
+              <h4 id="hourEvents">Loading...</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upcoming -->
+      <h5 class="mt-4">🔔 Events Starting Soon</h5>
+      <ul id="upcomingList" class="list-group" style="max-width: 500px;"></ul>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('show');
+  }
+
+  async function loadStats() {
+    try {
+      const resAll = await fetch('/events');
+      const allEvents = await resAll.json();
+      document.getElementById('totalEvents').innerText = allEvents.length;
+
+      const today = new Date().toISOString().split('T')[0];
+      let todayCount = 0;
+      allEvents.forEach(event => {
+        if (event.start_time.startsWith(today)) todayCount++;
+      });
+      document.getElementById('todayEvents').innerText = todayCount;
+
+      const resUpcoming = await fetch('/upcoming_reminders');
+      const upcomingEvents = await resUpcoming.json();
+      document.getElementById('hourEvents').innerText = upcomingEvents.length;
+
+      const upcomingList = document.getElementById('upcomingList');
+      upcomingList.innerHTML = '';
+      upcomingEvents.forEach(e => {
+        const li = document.createElement('li');
+        li.className = 'list-group-item';
+        li.textContent = `${e.title} at ${e.start_time}`;
+        upcomingList.appendChild(li);
+      });
+    } catch (err) {
+      console.error("⚠️ Error loading stats:", err);
+    }
+  }
+
+  async function searchEvents() {
+    const query = document.getElementById('searchBox').value;
+    const res = await fetch(`/events/search?q=${encodeURIComponent(query)}`);
+    const results = await res.json();
+    const resultList = document.getElementById('searchResults');
+    resultList.innerHTML = '';
+
+    if (results.length === 0) {
+      resultList.innerHTML = '<li class="list-group-item">No results found</li>';
+      return;
+    }
+
+    results.forEach(e => {
+      const li = document.createElement('li');
+      li.className = 'list-group-item';
+      li.textContent = `${e.title} - ${e.description} (${e.start_time} ➡ ${e.end_time})`;
+      resultList.appendChild(li);
+    });
+  }
+
+  loadStats();
+  setTimeout(loadStats, 3000);
+  setInterval(loadStats, 60000);
+</script>
+
+</body>
+</html>

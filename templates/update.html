@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Update Event</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <div class="container-fluid">
+    <div class="row">
+      {% include 'sidebar.html' %}
+
+      <div class="col-md-10 p-4">
+        <h3 class="mb-4 text-center">✏️ Update Event</h3>
+        <form id="updateForm" style="max-width: 500px; margin: auto;">
+          <div class="mb-2"><input type="number" id="id" class="form-control" placeholder="Event ID to update" required></div>
+          <div class="mb-2"><input type="text" id="title" class="form-control" placeholder="New Title"></div>
+          <div class="mb-2"><input type="text" id="description" class="form-control" placeholder="New Description"></div>
+          <div class="mb-2"><input type="datetime-local" id="start_time" class="form-control"></div>
+          <div class="mb-2"><input type="datetime-local" id="end_time" class="form-control"></div>
+          <div class="mb-2">
+            <select id="recurrence" class="form-select">
+              <option value="">-- Change Recurrence --</option>
+              <option value="none">No Recurrence</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </div>
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" id="email_notify">
+            <label class="form-check-label" for="email_notify">Update Email Reminder</label>
+          </div>
+          <button class="btn btn-warning w-100">Update Event</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('updateForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('id').value;
+      const payload = {};
+      ['title', 'description', 'start_time', 'end_time', 'recurrence'].forEach(field => {
+        const val = document.getElementById(field).value;
+        if (val) payload[field] = field.includes('time') ? val.replace('T', ' ') : val;
+      });
+      payload['email_notify'] = document.getElementById('email_notify').checked;
+      const res = await fetch(`/events/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const result = await res.json();
+      alert(res.ok ? '✅ Event updated' : '❌ Error: ' + result.error);
+      if (res.ok) document.getElementById('updateForm').reset();
+    });
+  </script>
+</body>
+</html>
